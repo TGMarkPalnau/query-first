@@ -115,6 +115,38 @@ namespace QueryFirst
         }
         protected string userPartialClass;
         protected string resultClassName;
+		protected string resultClassNameSuffix
+		{
+			get
+			{
+				string suffix = "Results";
+				System.Configuration.KeyValueConfigurationElement classNameSuffix = null;
+				try
+				{
+					//ConfigurationAccessor config = new ConfigurationAccessor(_dte, null);
+					classNameSuffix = ProjectConfig.AppSettings["QfResultClassSuffix"];
+				}
+				catch (Exception)
+				{//nobody cares
+				}
+				if (classNameSuffix != null)
+				{
+					try
+					{
+						if ((suffix.Replace("_", "")).All(char.IsLetterOrDigit))
+						{
+							if (classNameSuffix.Value.Length > 0)
+								suffix = classNameSuffix.Value;
+						}
+					}
+					catch (Exception)
+					{//still, nobody cares
+					}
+				}
+
+				return suffix;
+			}
+		}
         /// <summary>
         /// Result class name, read from the user's half of the partial class, written to the generated half.
         /// </summary>
@@ -123,7 +155,7 @@ namespace QueryFirst
             get
             {
                 if (string.IsNullOrEmpty(userPartialClass))
-                    userPartialClass = File.ReadAllText(CurrDir + BaseName + "Results.cs");
+                    userPartialClass = File.ReadAllText(CurrDir + BaseName + resultClassNameSuffix + ".cs");
                 if (resultClassName == null)
                     resultClassName = Regex.Match(userPartialClass, "(?im)partial class (\\S+)").Groups[1].Value;
                 return resultClassName;
@@ -138,7 +170,7 @@ namespace QueryFirst
             get
             {
                 if (string.IsNullOrEmpty(userPartialClass))
-                    userPartialClass = File.ReadAllText(CurrDir + BaseName + "Results.cs");
+                    userPartialClass = File.ReadAllText(CurrDir + BaseName + resultClassNameSuffix + ".cs");
                 return Regex.Match(userPartialClass, "(?im)^namespace (\\S+)").Groups[1].Value;
 
             }
