@@ -126,9 +126,7 @@ namespace QueryFirst
 					//ConfigurationAccessor config = new ConfigurationAccessor(_dte, null);
 					classNameSuffix = ProjectConfig.AppSettings["QfResultClassSuffix"];
 				}
-				catch (Exception)
-				{//nobody cares
-				}
+				catch (Exception){}//nobody cares
 				if (classNameSuffix != null)
 				{
 					try
@@ -139,9 +137,7 @@ namespace QueryFirst
 								suffix = classNameSuffix.Value;
 						}
 					}
-					catch (Exception)
-					{//still, nobody cares
-					}
+					catch (Exception){}//still, nobody cares
 				}
 
 				return suffix;
@@ -208,6 +204,7 @@ namespace QueryFirst
                 return methodSignature;
             }
         }
+		protected string queryModel = "QueryModel";
         //taken out of constructor, we don't need this anymore????
         //                ((ISignatureMaker)TinyIoCContainer.Current.Resolve(typeof(ISignatureMaker)))
         //.MakeMethodAndCallingSignatures(ctx.Query.QueryParams, out methodSignature, out callingArgs);
@@ -221,13 +218,37 @@ namespace QueryFirst
             {
                 if (string.IsNullOrEmpty(callingArgs))
                 {
-                    StringBuilder sig = new StringBuilder();
-                    StringBuilder call = new StringBuilder();
-                    foreach (var qp in Query.QueryParams)
-                    {
-                        sig.Append(qp.CSType + ' ' + qp.CSName + ", ");
-                        call.Append(qp.CSName + ", ");
-                    }
+					bool useObject = false;
+					System.Configuration.KeyValueConfigurationElement useParametersObject = null;
+					try
+					{
+						useParametersObject = ProjectConfig.AppSettings["QfUseParametersObject"];
+					}
+					catch (Exception){}//nobody cares
+					if (useParametersObject != null)
+					{
+						try
+						{
+							if (Convert.ToBoolean(useParametersObject.Value))
+								useObject = true;
+						}
+						catch (Exception){}//still, nobody cares
+					}
+
+					StringBuilder call = new StringBuilder();
+					if (useObject)
+					{
+						call.Append(BaseName + queryModel + " " + queryModel + ", ");
+					}
+					else
+					{
+						foreach (var qp in Query.QueryParams)
+						{
+							//sig.Append(qp.CSType + ' ' + qp.CSName + ", ");
+							call.Append(qp.CSName + ", ");
+						}
+					}
+                    
                     //signature trailing comma trimmed in place if needed. 
                     call.Append("conn"); // calling args always used to call overload with connection
                     callingArgs = call.ToString();
