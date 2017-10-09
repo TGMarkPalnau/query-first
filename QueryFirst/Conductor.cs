@@ -168,7 +168,7 @@ The query {1} may not run and the wrapper has not been regenerated.",
                     Code.Append(wrapper.CloseNamespace(ctx));
                     //File.WriteAllText(ctx.GeneratedClassFullFilename, Code.ToString());
                     ctx.PutCodeHere.WriteAndFormat(Code.ToString());
-                    var partialClassFile = GetItemByFilename(ctx.QueryDoc.ProjectItem.ProjectItems, ctx.CurrDir + ctx.BaseName + "Results.cs");
+                    var partialClassFile = GetItemByFilename(ctx.QueryDoc.ProjectItem.ProjectItems, ctx.CurrDir + ctx.BaseName + ctx.resultClassNameSuffix + ".cs");
                     new BackwardCompatibility().InjectPOCOFactory(ctx, partialClassFile);
                     _vsOutputWindow.Write(Environment.NewLine + "QueryFirst generated wrapper class for " + ctx.BaseName + ".sql");
                 }

@@ -115,7 +115,7 @@ namespace QueryFirst
         }
         protected string userPartialClass;
         protected string resultClassName;
-		protected string resultClassNameSuffix
+		public string resultClassNameSuffix
 		{
 			get
 			{
