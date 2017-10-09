@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TemplateWizard;
-using System.Windows.Forms;
 using EnvDTE;
+using System.Linq;
 
 namespace QueryFirst
 {
@@ -11,9 +11,9 @@ namespace QueryFirst
         //private UserInputForm inputForm;
         private string customMessage;
 
-        // This method is called before opening any item that 
-        // has the OpenInEditor attribute.
-        public void BeforeOpeningFile(ProjectItem projectItem)
+		// This method is called before opening any item that 
+		// has the OpenInEditor attribute.
+		public void BeforeOpeningFile(ProjectItem projectItem)
         {
         }
 
@@ -28,10 +28,12 @@ namespace QueryFirst
         {
             string path = item.FileNames[0];
             string parentPath = null;
-            if (path.EndsWith(".gen.cs"))
+			string classNameSuffix = "Model";
+
+			if (path.EndsWith(".gen.cs"))
                 parentPath = path.Replace(".gen.cs", ".sql");
-            if (path.EndsWith("Results.cs"))
-                parentPath = path.Replace("Results.cs", ".sql");
+			if (path.EndsWith("Results.cs") || path.EndsWith(classNameSuffix + ".cs"))
+                parentPath = path.Replace(classNameSuffix + ".cs", ".sql");
             if (!string.IsNullOrEmpty(parentPath))
             {
                 ProjectItem parent = item.DTE.Solution.FindProjectItem(parentPath);
@@ -40,12 +42,10 @@ namespace QueryFirst
                     item.Remove();
                     parent.ProjectItems.AddFromFile(path);
             }
-
-
         }
 
-        // This method is called after the project is created.
-        public void RunFinished()
+		// This method is called after the project is created.
+		public void RunFinished()
         {
         }
 
@@ -53,24 +53,24 @@ namespace QueryFirst
             Dictionary<string, string> replacementsDictionary,
             WizardRunKind runKind, object[] customParams)
         {
-            //try
-            //{
-            //    // Display a form to the user. The form collects 
-            //    // input for the custom message.
-            //    inputForm = new UserInputForm();
-            //    inputForm.ShowDialog();
+			//try
+			//{
+			//    // Display a form to the user. The form collects 
+			//    // input for the custom message.
+			//    inputForm = new UserInputForm();
+			//    inputForm.ShowDialog();
 
-            //    customMessage = UserInputForm.CustomMessage;
+			//    customMessage = UserInputForm.CustomMessage;
 
-            //    // Add custom parameters.
-            //    replacementsDictionary.Add("$custommessage$",
-            //        customMessage);
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.ToString());
-            //}
-        }
+			//    // Add custom parameters.
+			//    replacementsDictionary.Add("$custommessage$",
+			//        customMessage);
+			//}
+			//catch (Exception ex)
+			//{
+			//    MessageBox.Show(ex.ToString());
+			//}
+		}
 
         // This method is only called for item templates,
         // not for project templates.

@@ -235,15 +235,36 @@ namespace QueryFirst
                     string folder = Path.GetDirectoryName((string)renamedQuery.Properties.Item("FullPath").Value);
                     if (((string)item.Properties.Item("FullPath").Value).StartsWith(folder))
                     {
-                        if (item.Name == OldName.Replace(".sql", ".gen.cs"))
+						string suffix = "Results";
+						System.Configuration.KeyValueConfigurationElement classNameSuffix = null;
+						try
+						{
+							ConfigurationAccessor config = new ConfigurationAccessor(_dte, null);
+							classNameSuffix = config.AppSettings["QfResultClassSuffix"];
+						}
+						catch (Exception) { }//nobody cares
+						if (classNameSuffix != null)
+						{
+							try
+							{
+								if ((suffix.Replace("_", "")).All(char.IsLetterOrDigit))
+								{
+									if (classNameSuffix.Value.Length > 0)
+										suffix = classNameSuffix.Value;
+								}
+							}
+							catch (Exception) { }//still, nobody cares
+						}
+
+						if (item.Name == OldName.Replace(".sql", ".gen.cs"))
                         {
                             item.Name = renamedQuery.Name.Replace(".sql", ".gen.cs");
 
                             fuxed++;
                         }
-                        if (item.Name == OldName.Replace(".sql", "Results.cs"))
+                        if (item.Name == OldName.Replace(".sql", suffix + ".cs"))
                         {
-                            item.Name = renamedQuery.Name.Replace(".sql", "Results.cs");
+                            item.Name = renamedQuery.Name.Replace(".sql", suffix + ".cs");
                             var oldBaseName = OldName.Replace(".sql", "");
                             var newBaseName = renamedQuery.Name.Replace(".sql", "");
                             var userFile = ((TextDocument)item.Document.Object());

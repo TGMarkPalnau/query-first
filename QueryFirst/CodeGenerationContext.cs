@@ -42,7 +42,10 @@ namespace QueryFirst
             string currDir = Path.GetDirectoryName(queryDoc.FullName);
 
             hlpr = new AdoSchemaFetcher();
-        }
+
+			_resultClassNameSuffix();
+
+		}
         public Query Query { get { return query; } }
         protected string baseName;
         private ConfigurationAccessor _config;
@@ -115,34 +118,15 @@ namespace QueryFirst
         }
         protected string userPartialClass;
         protected string resultClassName;
-		public string resultClassNameSuffix
-		{
-			get
-			{
-				string suffix = "Results";
-				System.Configuration.KeyValueConfigurationElement classNameSuffix = null;
-				try
-				{
-					//ConfigurationAccessor config = new ConfigurationAccessor(_dte, null);
-					classNameSuffix = ProjectConfig.AppSettings["QfResultClassSuffix"];
-				}
-				catch (Exception){}//nobody cares
-				if (classNameSuffix != null)
-				{
-					try
-					{
-						if ((suffix.Replace("_", "")).All(char.IsLetterOrDigit))
-						{
-							if (classNameSuffix.Value.Length > 0)
-								suffix = classNameSuffix.Value;
-						}
-					}
-					catch (Exception){}//still, nobody cares
-				}
 
-				return suffix;
-			}
+		public string resultClassNameSuffix = null;
+		private void _resultClassNameSuffix()
+		{
+			string classNameSuffix = "Model";
+
+			resultClassNameSuffix = classNameSuffix;
 		}
+		
         /// <summary>
         /// Result class name, read from the user's half of the partial class, written to the generated half.
         /// </summary>
