@@ -167,9 +167,11 @@ The query {1} may not run and the wrapper has not been regenerated.",
 					}
                     Code.Append(results.CloseClass()); // closes wrapper class if no results !
 
-					if (ctx.ParameterFields != null && ctx.ParameterFields.Count > 0)
+					var ctxParms = ctx.ParametersList; // Make sure to assign the parameters to the context
+					if (ctxParms != null && ctxParms.Count > 0)
 					{
 						Code.Append(parmers.StartClass(ctx));
+						// Use the parameters to create the properties
 						foreach (var fld in ctx.ParameterFields)
 						{
 							Code.Append(parmers.MakeProperty(fld));
