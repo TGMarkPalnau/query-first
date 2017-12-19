@@ -130,7 +130,7 @@ The query {1} may not run and the wrapper has not been regenerated.",
 
                     var wrapper = _tiny.Resolve<IWrapperClassMaker>();
                     var results = _tiny.Resolve<IResultClassMaker>();
-					ParameterClassMaker parmers = (ParameterClassMaker)_tiny.Resolve<IResultClassMaker>();
+					ParameterClassMaker parmers = new ParameterClassMaker();
 
                     Code.Append(wrapper.StartNamespace(ctx));
                     Code.Append(wrapper.Usings(ctx));
