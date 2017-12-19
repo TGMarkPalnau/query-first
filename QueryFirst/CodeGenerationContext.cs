@@ -217,6 +217,28 @@ namespace QueryFirst
                 return methodSignature;
             }
         }
+		/// <summary>
+		/// Parameter types and names, into a list
+		/// </summary>
+		public virtual List<ResultFieldDetails> ParametersList
+		{
+			// todo this should be a stringtemplate
+			get
+			{
+				if (parameterFields == null)
+				{
+					foreach (var qp in Query.QueryParams)
+					{
+						parameterFields.Add(new ResultFieldDetails()
+						{
+							TypeCs = qp.CSType,
+							ColumnName = qp.CSName
+						});
+					}
+				}
+				return ParameterFields;
+			}
+		}
 		protected string queryModel = "Parameters";
         //taken out of constructor, we don't need this anymore????
         //                ((ISignatureMaker)TinyIoCContainer.Current.Resolve(typeof(ISignatureMaker)))
@@ -279,7 +301,7 @@ namespace QueryFirst
             set { resultFields = value; }
         }
 
-		protected List<ResultFieldDetails> parameterFields;
+		protected List<ResultFieldDetails> parameterFields = null;
 		public List<ResultFieldDetails> ParameterFields
 		{
 			get { return parameterFields; }
