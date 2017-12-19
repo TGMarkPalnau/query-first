@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="QueryParameters.cs" />
     <None Include="Query.gen.cs" />
     <None Include="QueryResults.cs" />
   </ItemGroup>
