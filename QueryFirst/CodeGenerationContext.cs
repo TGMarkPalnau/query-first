@@ -44,6 +44,7 @@ namespace QueryFirst
             hlpr = new AdoSchemaFetcher();
 
 			_resultClassNameSuffix();
+			_parametersClassNameSuffix();
 
 		}
         public Query Query { get { return query; } }
@@ -277,6 +278,13 @@ namespace QueryFirst
             get { return resultFields; }
             set { resultFields = value; }
         }
+
+		protected List<ResultFieldDetails> parameterFields;
+		public List<ResultFieldDetails> ParameterFields
+		{
+			get { return parameterFields; }
+			set { parameterFields = value; }
+		}
 
         protected bool queryHasRun;
         public bool QueryHasRun
