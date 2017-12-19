@@ -1,13 +1,13 @@
-/* .sql query managed by QueryFirst add-in */
+/* .sql managed query - QueryFirst add-in */
 --QfDefaultConnection=Data Source=not-mobility;Initial Catalog=NORTHWND;Integrated Security=SSPI;
 SET NOCOUNT ON;
 DECLARE @nl varchar(5) = CHAR(13) + CHAR(10);
 DECLARE @CloseComments varchar(50) = @nl + char(45) + '- endDesignTime' + @nl ;
-/*designTime - put parameter declarations and design time initialization here
+-- designTime - put parameter declarations and design time initialization here
 
 
 DECLARE @table_name varchar(776) = 'Orders';  		-- The table/view for which the INSERT statements will be generated using the existing data
-endDesignTime*/
+-- endDesignTime
 DECLARE @include_timestamp bit = 0; 		-- Specify 1 for this parameter, if you want to include the TIMESTAMP/ROWVERSION column's data in the INSERT statement
 DECLARE @debug_mode bit = 0;			-- If @debug_mode is set to 1, the SQL statements constructed by this procedure will be printed for later examination
 DECLARE @owner varchar(64) = NULL;		-- Use this parameter if you are not the owner of the table
@@ -243,7 +243,7 @@ IF LTRIM(@Actual_Values) = ''
 --Forming the final string that will be executed, to output the INSERT statements
 
 	BEGIN
-		SET @Actual_Values = '/* .sql query managed by QueryFirst add-in */' + @nl + @nl + char(45) +
+		SET @Actual_Values = '/* .sql managed query - QueryFirst add-in */' + @nl + @nl + char(45) +
 '-designTime - put parameter declarations and design time initialization here' + @nl + 
 @Declarations +
 @CloseComments +

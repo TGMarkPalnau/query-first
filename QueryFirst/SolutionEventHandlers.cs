@@ -295,7 +295,7 @@ namespace QueryFirst
                 {
                     var textDoc = ((TextDocument)Document.Object());
                     var text = textDoc.CreateEditPoint().GetText(textDoc.EndPoint);
-                    if (text.Contains("managed by QueryFirst"))
+                    if (text.Contains(".sql managed query"))
                     {
                         var cdctr = new Conductor(_VSOutputWindow);
                         cdctr.ProcessOneQuery(Document);
