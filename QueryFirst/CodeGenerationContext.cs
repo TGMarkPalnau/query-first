@@ -33,8 +33,15 @@ namespace QueryFirst
             this.queryDoc = queryDoc;
             dte = queryDoc.DTE;
             query = new Query(this);
-            provider = tiny.Resolve<IProvider>(DesignTimeConnectionString.v.ProviderName);
-            provider.Initialize(DesignTimeConnectionString.v);
+			try
+			{
+				provider = tiny.Resolve<IProvider>(DesignTimeConnectionString.v.ProviderName);
+				provider.Initialize(DesignTimeConnectionString.v);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Unable to resolve connection string provider", ex);
+			}
             // resolving the target project item for code generation. We know the file name, we loop through child items of the query til we find it.
             _putCodeHere = new PutCodeHere(Conductor.GetItemByFilename(queryDoc.ProjectItem.ProjectItems, GeneratedClassFullFilename));
 
