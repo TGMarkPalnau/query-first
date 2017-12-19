@@ -216,7 +216,7 @@ namespace QueryFirst
                 return methodSignature;
             }
         }
-		protected string queryModel = "QueryModel";
+		protected string queryModel = "Parameters";
         //taken out of constructor, we don't need this anymore????
         //                ((ISignatureMaker)TinyIoCContainer.Current.Resolve(typeof(ISignatureMaker)))
         //.MakeMethodAndCallingSignatures(ctx.Query.QueryParams, out methodSignature, out callingArgs);
@@ -250,7 +250,7 @@ namespace QueryFirst
 					StringBuilder call = new StringBuilder();
 					if (useObject)
 					{
-						call.Append(BaseName + queryModel + " " + queryModel + ", ");
+						call.Append(BaseName + queryModel + " Query" + queryModel + ", ");
 					}
 					else
 					{
