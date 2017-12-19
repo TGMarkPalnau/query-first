@@ -130,7 +130,6 @@ The query {1} may not run and the wrapper has not been regenerated.",
 
                     var wrapper = _tiny.Resolve<IWrapperClassMaker>();
                     var results = _tiny.Resolve<IResultClassMaker>();
-					ParameterClassMaker parmers = new ParameterClassMaker();
 
                     Code.Append(wrapper.StartNamespace(ctx));
                     Code.Append(wrapper.Usings(ctx));
@@ -170,13 +169,17 @@ The query {1} may not run and the wrapper has not been regenerated.",
 					var ctxParms = ctx.ParametersList; // Make sure to assign the parameters to the context
 					if (ctxParms != null && ctxParms.Count > 0)
 					{
-						Code.Append(parmers.StartClass(ctx));
+						Code.Append(results.StartParametersClass(ctx));
 						// Use the parameters to create the properties
 						foreach (var fld in ctx.ParameterFields)
 						{
-							Code.Append(parmers.MakeProperty(fld));
+							Code.Append(results.MakeProperty(fld));
 						}
-						Code.Append(parmers.CloseClass());
+						Code.Append(results.CloseClass());
+					}
+					else
+					{
+						_vsOutputWindow.Write(Environment.NewLine + "QueryFirst no parameters found for " + ctx.BaseName + ".sql");
 					}
 
 					Code.Append(wrapper.CloseNamespace(ctx));
