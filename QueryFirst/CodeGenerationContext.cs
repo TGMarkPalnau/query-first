@@ -117,6 +117,7 @@ namespace QueryFirst
             }
         }
         protected string userPartialClass;
+		protected string userParametersPartialClass;
         protected string resultClassName;
 
 		public string resultClassNameSuffix = null;
@@ -126,11 +127,36 @@ namespace QueryFirst
 
 			resultClassNameSuffix = classNameSuffix;
 		}
-		
-        /// <summary>
-        /// Result class name, read from the user's half of the partial class, written to the generated half.
-        /// </summary>
-        public virtual string ResultClassName
+
+		protected string parametersClassName;
+
+		public string parametersClassNameSuffix = null;
+		private void _parametersClassNameSuffix()
+		{
+			string classNameSuffix = "Parameters";
+
+			parametersClassNameSuffix = classNameSuffix;
+		}
+
+		/// <summary>
+		/// Parameters class name, read from the user's half of the partial class, written to the generated half.
+		/// </summary>
+		public virtual string ParametersClassName
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(userPartialClass))
+					userPartialClass = File.ReadAllText(CurrDir + BaseName + parametersClassNameSuffix + ".cs");
+				if (parametersClassName == null)
+					parametersClassName = Regex.Match(userParametersPartialClass, "(?im)partial class (\\S+)").Groups[1].Value;
+				return parametersClassName;
+
+			}
+		}
+		/// <summary>
+		/// Result class name, read from the user's half of the partial class, written to the generated half.
+		/// </summary>
+		public virtual string ResultClassName
         {
             get
             {
@@ -151,6 +177,8 @@ namespace QueryFirst
             {
                 if (string.IsNullOrEmpty(userPartialClass))
                     userPartialClass = File.ReadAllText(CurrDir + BaseName + resultClassNameSuffix + ".cs");
+				if (string.IsNullOrEmpty(userParametersPartialClass))
+					userParametersPartialClass = File.ReadAllText(CurrDir + BaseName + parametersClassNameSuffix + ".cs");
                 return Regex.Match(userPartialClass, "(?im)^namespace (\\S+)").Groups[1].Value;
 
             }
