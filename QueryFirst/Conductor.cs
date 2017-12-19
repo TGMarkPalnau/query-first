@@ -130,6 +130,7 @@ The query {1} may not run and the wrapper has not been regenerated.",
 
                     var wrapper = _tiny.Resolve<IWrapperClassMaker>();
                     var results = _tiny.Resolve<IResultClassMaker>();
+					ParameterClassMaker parmers = (ParameterClassMaker)_tiny.Resolve<IResultClassMaker>();
 
                     Code.Append(wrapper.StartNamespace(ctx));
                     Code.Append(wrapper.Usings(ctx));
@@ -163,9 +164,20 @@ The query {1} may not run and the wrapper has not been regenerated.",
                         {
                             Code.Append(results.MakeProperty(fld));
                         }
-                    }
+					}
                     Code.Append(results.CloseClass()); // closes wrapper class if no results !
-                    Code.Append(wrapper.CloseNamespace(ctx));
+
+					if (ctx.ParameterFields != null && ctx.ParameterFields.Count > 0)
+					{
+						Code.Append(parmers.StartClass(ctx));
+						foreach (var fld in ctx.ParameterFields)
+						{
+							Code.Append(parmers.MakeProperty(fld));
+						}
+						Code.Append(parmers.CloseClass());
+					}
+
+					Code.Append(wrapper.CloseNamespace(ctx));
                     //File.WriteAllText(ctx.GeneratedClassFullFilename, Code.ToString());
                     ctx.PutCodeHere.WriteAndFormat(Code.ToString());
                     var partialClassFile = GetItemByFilename(ctx.QueryDoc.ProjectItem.ProjectItems, ctx.CurrDir + ctx.BaseName + ctx.resultClassNameSuffix + ".cs");
