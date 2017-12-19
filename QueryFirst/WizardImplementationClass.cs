@@ -29,11 +29,14 @@ namespace QueryFirst
             string path = item.FileNames[0];
             string parentPath = null;
 			string classNameSuffix = "Model";
+			string parametersClassSuffix = "Parameters";
 
 			if (path.EndsWith(".gen.cs"))
                 parentPath = path.Replace(".gen.cs", ".sql");
 			if (path.EndsWith("Results.cs") || path.EndsWith(classNameSuffix + ".cs"))
                 parentPath = path.Replace(classNameSuffix + ".cs", ".sql");
+			if (path.EndsWith(parametersClassSuffix + ".cs"))
+				parentPath = path.Replace(parametersClassSuffix + ".cs", ".sql");
             if (!string.IsNullOrEmpty(parentPath))
             {
                 ProjectItem parent = item.DTE.Solution.FindProjectItem(parentPath);
