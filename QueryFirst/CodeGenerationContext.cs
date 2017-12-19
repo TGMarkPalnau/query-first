@@ -227,6 +227,7 @@ namespace QueryFirst
 			{
 				if (parameterFields == null)
 				{
+					parameterFields = new List<ResultFieldDetails>();
 					foreach (var qp in Query.QueryParams)
 					{
 						parameterFields.Add(new ResultFieldDetails()

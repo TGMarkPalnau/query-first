@@ -5,7 +5,7 @@ namespace $rootnamespace$
 	[Serializable]
 	public partial class $safeitemrootname$
 	{
-		// Partial class extends the generated results class
+		// Partial class extends the generated parameters class
 		// Serializable by default, but you can change this here		
 		// Put your methods here :-)
 		internal void OnLoad()
