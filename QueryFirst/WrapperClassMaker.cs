@@ -38,7 +38,7 @@ using System.Linq;
             StringBuilder code = new StringBuilder();
             char[] spaceComma = new char[] { ',', ' ' };
             // Execute method, without connection
-            code.AppendLine("public virtual List<" + ctx.ResultClassName + "> Execute(" + ctx.MethodSignature.Trim(spaceComma) + "){");
+            code.AppendLine("public virtual List<" + ctx.ResultClassName + "> Execute(" + GetMethodSignature(ctx).Trim(spaceComma) + "){");
             code.AppendLine("using (IDbConnection conn = QfRuntimeConnection.GetConnection())");
             code.AppendLine("{");
             code.AppendLine("conn.Open();");
@@ -51,7 +51,7 @@ using System.Linq;
         {
             StringBuilder code = new StringBuilder();
             // Execute method with connection
-            code.AppendLine("public virtual IEnumerable<" + ctx.ResultClassName + "> Execute(" + ctx.MethodSignature + "IDbConnection conn){");
+            code.AppendLine("public virtual IEnumerable<" + ctx.ResultClassName + "> Execute(" + GetMethodSignature(ctx) + "IDbConnection conn){");
             code.AppendLine("IDbCommand cmd = conn.CreateCommand();");
             code.AppendLine("cmd.CommandText = getCommandText();");
             foreach (var qp in ctx.Query.QueryParams)
@@ -73,7 +73,7 @@ using System.Linq;
             char[] spaceComma = new char[] { ',', ' ' };
             StringBuilder code = new StringBuilder();
             // GetOne without connection
-            code.AppendLine("public virtual " + ctx.ResultClassName + " GetOne(" + ctx.MethodSignature.Trim(spaceComma) + "){");
+            code.AppendLine("public virtual " + ctx.ResultClassName + " GetOne(" + GetMethodSignature(ctx).Trim(spaceComma) + "){");
             code.AppendLine("using (IDbConnection conn = QfRuntimeConnection.GetConnection())");
             code.AppendLine("{");
             code.AppendLine("conn.Open();");
@@ -87,7 +87,7 @@ using System.Linq;
         {
             StringBuilder code = new StringBuilder();
             // GetOne() with connection
-            code.AppendLine("public virtual " + ctx.ResultClassName + " GetOne(" + ctx.MethodSignature + "IDbConnection conn)");
+            code.AppendLine("public virtual " + ctx.ResultClassName + " GetOne(" + GetMethodSignature(ctx) + "IDbConnection conn)");
             code.AppendLine("{");
             code.AppendLine("var all = Execute(" + ctx.CallingArgs + ");");
             code.AppendLine("using (IEnumerator<" + ctx.ResultClassName + "> iter = all.GetEnumerator())");
@@ -104,7 +104,7 @@ using System.Linq;
             char[] spaceComma = new char[] { ',', ' ' };
             StringBuilder code = new StringBuilder();
             //ExecuteScalar without connection
-            code.AppendLine("public virtual " + ctx.ResultFields[0].TypeCs + " ExecuteScalar(" + ctx.MethodSignature.Trim(spaceComma) + "){");
+            code.AppendLine("public virtual " + ctx.ResultFields[0].TypeCs + " ExecuteScalar(" + GetMethodSignature(ctx).Trim(spaceComma) + "){");
             code.AppendLine("using (IDbConnection conn = QfRuntimeConnection.GetConnection())");
             code.AppendLine("{");
             code.AppendLine("conn.Open();");
@@ -117,7 +117,7 @@ using System.Linq;
         {
             StringBuilder code = new StringBuilder();
             // ExecuteScalar() with connection
-            code.AppendLine("public virtual " + ctx.ResultFields[0].TypeCs + " ExecuteScalar(" + ctx.MethodSignature + "IDbConnection conn){");
+            code.AppendLine("public virtual " + ctx.ResultFields[0].TypeCs + " ExecuteScalar(" + GetMethodSignature(ctx) + "IDbConnection conn){");
             code.AppendLine("IDbCommand cmd = conn.CreateCommand();");
             code.AppendLine("cmd.CommandText = getCommandText();");
             foreach (var qp in ctx.Query.QueryParams)
@@ -146,8 +146,9 @@ using System.Linq;
         {
             char[] spaceComma = new char[] { ',', ' ' };
             StringBuilder code = new StringBuilder();
-            //ExecuteScalar without connection
-            code.AppendLine("public virtual int ExecuteNonQuery(" + ctx.MethodSignature.Trim(spaceComma) + "){");
+			//ExecuteScalar without connection
+			
+			code.AppendLine("public virtual int ExecuteNonQuery(" + GetMethodSignature(ctx).Trim(spaceComma) + "){");
             code.AppendLine("using (IDbConnection conn = QfRuntimeConnection.GetConnection())");
             code.AppendLine("{");
             code.AppendLine("conn.Open();");
@@ -160,7 +161,7 @@ using System.Linq;
         {
             StringBuilder code = new StringBuilder();
             // ExecuteScalar() with connection
-            code.AppendLine("public virtual int ExecuteNonQuery(" + ctx.MethodSignature + "IDbConnection conn){");
+            code.AppendLine("public virtual int ExecuteNonQuery(" + GetMethodSignature(ctx) + "IDbConnection conn){");
             code.AppendLine("IDbCommand cmd = conn.CreateCommand();");
             code.AppendLine("cmd.CommandText = getCommandText();");
             foreach(var qp in ctx.Query.QueryParams)
@@ -293,5 +294,13 @@ using System.Linq;
             code.AppendLine("}");
             return code.ToString();
         }
+
+		protected string GetMethodSignature(CodeGenerationContext ctx)
+		{
+			if (ctx.ProjectConfig?.AppSettings["QfUseParametersObject"] != null && bool.Parse(ctx.ProjectConfig.AppSettings["QfUseParametersObject"].Value))
+				return ctx.MethodSignatureObject + ", ";
+			else
+				return ctx.MethodSignature;
+		}
     }
 }

@@ -69,7 +69,7 @@ The query {1} may not run and the wrapper has not been regenerated.",
 
                 var makeSelfTest = ctx.ProjectConfig?.AppSettings["QfMakeSelfTest"] != null && bool.Parse(ctx.ProjectConfig.AppSettings["QfMakeSelfTest"].Value);
 
-                var matchInsert = Regex.Match(ctx.Query.Text, "^insert\\s+into\\s+(?<tableName>\\w+)\\.\\.\\.", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+				var matchInsert = Regex.Match(ctx.Query.Text, "^insert\\s+into\\s+(?<tableName>\\w+)\\.\\.\\.", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                 var matchUpdate = Regex.Match(ctx.Query.Text, "^update\\s+(?<tableName>\\w+)\\.\\.\\.", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                 if (matchInsert.Success)
                 {

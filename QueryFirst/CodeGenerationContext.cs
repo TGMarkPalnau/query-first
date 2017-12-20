@@ -224,6 +224,18 @@ namespace QueryFirst
                 return methodSignature;
             }
         }
+		protected string queryModel = "Parameters";
+		protected string methodSignatureObject;
+		public virtual string MethodSignatureObject
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(methodSignatureObject))
+					methodSignature = BaseName + queryModel + " Query" + queryModel;
+
+				return methodSignatureObject;
+			}
+		}
 		/// <summary>
 		/// Parameter types and names, into a list
 		/// </summary>
@@ -247,7 +259,7 @@ namespace QueryFirst
 				return ParameterFields;
 			}
 		}
-		protected string queryModel = "Parameters";
+		
         //taken out of constructor, we don't need this anymore????
         //                ((ISignatureMaker)TinyIoCContainer.Current.Resolve(typeof(ISignatureMaker)))
         //.MakeMethodAndCallingSignatures(ctx.Query.QueryParams, out methodSignature, out callingArgs);
@@ -261,35 +273,12 @@ namespace QueryFirst
             {
                 if (string.IsNullOrEmpty(callingArgs))
                 {
-					bool useObject = false;
-					System.Configuration.KeyValueConfigurationElement useParametersObject = null;
-					try
-					{
-						useParametersObject = ProjectConfig.AppSettings["QfUseParametersObject"];
-					}
-					catch (Exception){}//nobody cares
-					if (useParametersObject != null)
-					{
-						try
-						{
-							if (Convert.ToBoolean(useParametersObject.Value))
-								useObject = true;
-						}
-						catch (Exception){}//still, nobody cares
-					}
-
 					StringBuilder call = new StringBuilder();
-					if (useObject)
+
+					foreach (var qp in Query.QueryParams)
 					{
-						call.Append(BaseName + queryModel + " Query" + queryModel + ", ");
-					}
-					else
-					{
-						foreach (var qp in Query.QueryParams)
-						{
-							//sig.Append(qp.CSType + ' ' + qp.CSName + ", ");
-							call.Append(qp.CSName + ", ");
-						}
+						//sig.Append(qp.CSType + ' ' + qp.CSName + ", ");
+						call.Append(qp.CSName + ", ");
 					}
                     
                     //signature trailing comma trimmed in place if needed. 
