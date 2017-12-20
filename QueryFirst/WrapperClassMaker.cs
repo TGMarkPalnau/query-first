@@ -311,6 +311,14 @@ using System.Linq;
 				return "";
 		}
 
+		protected string GetCallingArgs(CodeGenerationContext ctx)
+		{
+			if (UsingParameterObject(ctx))
+				return ctx.CallingArgsWithObject;
+			else
+				return ctx.CallingArgs;
+		}
+
 		protected bool? usingParameterObject = null;
 		protected bool UsingParameterObject(CodeGenerationContext ctx)
 		{

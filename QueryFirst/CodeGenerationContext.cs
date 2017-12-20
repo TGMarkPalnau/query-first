@@ -288,6 +288,30 @@ namespace QueryFirst
                 return callingArgs;
             }
         }
+
+		protected string callingArgsWithObject;
+		public string CallingArgsWithObject
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(callingArgsWithObject))
+				{
+					StringBuilder call = new StringBuilder();
+
+					foreach (var qp in Query.QueryParams)
+					{
+						call.Append(BaseName + queryModel + "." + qp.CSName + ", ");
+					}
+
+					//signature trailing comma trimmed in place if needed. 
+					call.Append("conn"); // calling args always used to call overload with connection
+					callingArgs = call.ToString();
+				}
+				return callingArgs;
+			}
+		}
+
+
         protected List<ResultFieldDetails> resultFields;
         /// <summary>
         /// The schema table returned from the dummy run of the query.
