@@ -231,7 +231,7 @@ namespace QueryFirst
 			get
 			{
 				if (string.IsNullOrEmpty(methodSignatureObject))
-					methodSignature = BaseName + queryModel + " Query" + queryModel;
+					methodSignatureObject = BaseName + queryModel + " Query" + queryModel;
 
 				return methodSignatureObject;
 			}
