@@ -297,10 +297,27 @@ using System.Linq;
 
 		protected string GetMethodSignature(CodeGenerationContext ctx)
 		{
-			if (ctx.ProjectConfig?.AppSettings["QfUseParametersObject"] != null && bool.Parse(ctx.ProjectConfig.AppSettings["QfUseParametersObject"].Value))
+			if (UsingParameterObject(ctx))
 				return ctx.MethodSignatureObject + ", ";
 			else
 				return ctx.MethodSignature;
+		}
+
+		protected string GetCallingArgPrefix(CodeGenerationContext ctx)
+		{
+			if (UsingParameterObject(ctx))
+				return ctx.BaseName + ctx.parametersClassNameSuffix + ".";
+			else
+				return "";
+		}
+
+		protected bool? usingParameterObject = null;
+		protected bool UsingParameterObject(CodeGenerationContext ctx)
+		{
+			if (usingParameterObject == null)
+				usingParameterObject = ctx.ProjectConfig?.AppSettings["QfUseParametersObject"] != null && bool.Parse(ctx.ProjectConfig.AppSettings["QfUseParametersObject"].Value);
+
+			return usingParameterObject ?? false;
 		}
     }
 }
