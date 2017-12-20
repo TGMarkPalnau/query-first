@@ -166,20 +166,23 @@ The query {1} may not run and the wrapper has not been regenerated.",
 					}
                     Code.Append(results.CloseClass()); // closes wrapper class if no results !
 
-					var ctxParms = ctx.ParametersList; // Make sure to assign the parameters to the context
-					if (ctxParms != null && ctxParms.Count > 0)
+					if (ctx.ProjectConfig?.AppSettings["QfUseParametersObject"] != null && bool.Parse(ctx.ProjectConfig.AppSettings["QfUseParametersObject"].Value))
 					{
-						Code.Append(results.StartParametersClass(ctx));
-						// Use the parameters to create the properties
-						foreach (var fld in ctx.ParameterFields)
+						var ctxParms = ctx.ParametersList; // Make sure to assign the parameters to the context
+						if (ctxParms != null && ctxParms.Count > 0)
 						{
-							Code.Append(results.MakeProperty(fld));
+							Code.Append(results.StartParametersClass(ctx));
+							// Use the parameters to create the properties
+							foreach (var fld in ctx.ParameterFields)
+							{
+								Code.Append(results.MakeProperty(fld));
+							}
+							Code.Append(results.CloseClass());
 						}
-						Code.Append(results.CloseClass());
-					}
-					else
-					{
-						_vsOutputWindow.Write(Environment.NewLine + "QueryFirst no parameters found for " + ctx.BaseName + ".sql");
+						else
+						{
+							_vsOutputWindow.Write(Environment.NewLine + "QueryFirst no parameters found for " + ctx.BaseName + ".sql");
+						}
 					}
 
 					Code.Append(wrapper.CloseNamespace(ctx));
