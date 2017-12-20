@@ -31,7 +31,7 @@ namespace QueryFirst.Providers
             {
                 string[] parts = m.Value.Split(new[] { ' ', '	' }, StringSplitOptions.RemoveEmptyEntries);
                 var qp = TinyIoC.TinyIoCContainer.Current.Resolve<IQueryParamInfo>();
-                FillParamInfo(qp, parts[1].Substring(1), parts[2], parts.Length > 2 ? parts[3] : "");
+                FillParamInfo(qp, parts[1].Substring(1), parts[2], parts.Length > 3 ? parts[3] : "");
                 queryParams.Add(qp);
                 m = m.NextMatch();
                 i++;
@@ -58,12 +58,11 @@ namespace QueryFirst.Providers
 
 			// Look for a default value to allow default null values in model
 			bool typeAllowNulls = false;
-			if (!string.IsNullOrWhiteSpace(defaultValue) && defaultValue.IndexOf("=") > 0)
+			if (!string.IsNullOrWhiteSpace(defaultValue) && defaultValue.IndexOf("=") == 0)
 			{
-				if (defaultValue.IndexOf("--") < 0 || defaultValue.IndexOf("--") > defaultValue.IndexOf("="))
+				// Must be in position 0 or else it may be commented. Ignore if a comment is around it
+				if (defaultValue.IndexOf("/*") < 0 || !(defaultValue.IndexOf("/*") < defaultValue.IndexOf("=") && defaultValue.IndexOf("*/") > defaultValue.IndexOf("=")))
 					typeAllowNulls = true;
-				if (defaultValue.IndexOf("/*") > -1 && defaultValue.IndexOf("/*") < defaultValue.IndexOf("=") && defaultValue.IndexOf("*/") > defaultValue.IndexOf("="))
-					typeAllowNulls = false;
 			}
 
             var csType = TypeMapDB2CS(typeOnly, out string normalizedType, typeAllowNulls);
