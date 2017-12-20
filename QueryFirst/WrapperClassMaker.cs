@@ -306,7 +306,7 @@ using System.Linq;
 		protected string GetCallingArgPrefix(CodeGenerationContext ctx)
 		{
 			if (UsingParameterObject(ctx))
-				return ctx.BaseName + ctx.parametersClassNameSuffix + ".";
+				return ctx.queryPrefix + ctx.parametersClassNameSuffix + ".";
 			else
 				return "";
 		}
