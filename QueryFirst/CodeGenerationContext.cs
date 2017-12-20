@@ -224,14 +224,14 @@ namespace QueryFirst
                 return methodSignature;
             }
         }
-		protected string queryModel = "Parameters";
+		public string queryPrefix = "query";
 		protected string methodSignatureObject;
 		public virtual string MethodSignatureObject
 		{
 			get
 			{
 				if (string.IsNullOrEmpty(methodSignatureObject))
-					methodSignatureObject = BaseName + queryModel + " Query" + queryModel;
+					methodSignatureObject = BaseName + parametersClassNameSuffix + " " + queryPrefix + parametersClassNameSuffix;
 
 				return methodSignatureObject;
 			}
@@ -296,18 +296,10 @@ namespace QueryFirst
 			{
 				if (string.IsNullOrEmpty(callingArgsWithObject))
 				{
-					StringBuilder call = new StringBuilder();
-
-					foreach (var qp in Query.QueryParams)
-					{
-						call.Append(BaseName + queryModel + "." + qp.CSName + ", ");
-					}
-
-					//signature trailing comma trimmed in place if needed. 
-					call.Append("conn"); // calling args always used to call overload with connection
-					callingArgs = call.ToString();
+					// calling args always used to call overload with connection
+					callingArgsWithObject = queryPrefix + parametersClassNameSuffix + ", conn";
 				}
-				return callingArgs;
+				return callingArgsWithObject;
 			}
 		}
 
