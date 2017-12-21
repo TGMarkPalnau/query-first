@@ -172,10 +172,10 @@ The query {1} may not run and the wrapper has not been regenerated.",
 						if (ctxParms != null && ctxParms.Count > 0)
 						{
 							Code.Append(results.StartParametersClass(ctx));
-							// Use the parameters to create the properties
+							// Use the parameters to create the properties, defaulting the values to null if nullable
 							foreach (var fld in ctx.ParameterFields)
 							{
-								Code.Append(results.MakeProperty(fld));
+								Code.Append(results.MakeProperty(fld, true));
 							}
 							Code.Append(results.CloseClass());
 						}

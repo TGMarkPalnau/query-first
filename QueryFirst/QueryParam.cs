@@ -20,5 +20,6 @@ namespace QueryFirst
         public int Length { get; set; }
         public int Precision { get; set; }
         public int Scale { get; set; }
+		public bool AllowDbNull { get; set; }
     }
 }

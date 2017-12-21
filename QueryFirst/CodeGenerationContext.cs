@@ -252,7 +252,8 @@ namespace QueryFirst
 						parameterFields.Add(new ResultFieldDetails()
 						{
 							TypeCs = qp.CSType,
-							ColumnName = qp.CSName
+							ColumnName = qp.CSName,
+							AllowDBNull = qp.AllowDbNull
 						});
 					}
 				}

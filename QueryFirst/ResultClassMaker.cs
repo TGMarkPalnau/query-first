@@ -12,7 +12,7 @@ namespace QueryFirst
         string Usings();
         string StartClass(CodeGenerationContext ctx);
 		string StartParametersClass(CodeGenerationContext ctx);
-        string MakeProperty(ResultFieldDetails fld);
+		string MakeProperty(ResultFieldDetails fld, bool defaultNull = false);
         string CloseClass();
     }
     public class ResultClassMaker : IResultClassMaker
@@ -24,10 +24,10 @@ namespace QueryFirst
         {
             return string.Format("public partial class {0} {{" + nl, ctx.ResultClassName);
         }
-        public virtual string MakeProperty(ResultFieldDetails fld)
+        public virtual string MakeProperty(ResultFieldDetails fld, bool defaultNull = false)
         {
             StringBuilder code = new StringBuilder();
-            code.AppendLine($"protected {fld.TypeCsShort} _{fld.CSColumnName}; //({fld.TypeDb} {(fld.AllowDBNull ? "null" : "not null")})");
+            code.AppendLine($"protected {fld.TypeCsShort} _{fld.CSColumnName}{(fld.AllowDBNull && defaultNull ? " = null" : "")}; //({fld.TypeDb} {(fld.AllowDBNull ? "null" : "not null")})");
             code.AppendLine($"public {fld.TypeCsShort} {fld.CSColumnName}{{\nget{{return _{fld.CSColumnName};}}\nset{{_{fld.CSColumnName} = value;}}\n}}");
             return code.ToString();
         }

@@ -10,6 +10,7 @@
         string CSName { get; set; }
         string DbName { get; set; }
         string DbType { get; set; }
+		bool AllowDbNull { get; set; }
         //string SqlTypeAndLength { get; set}
     }
 }

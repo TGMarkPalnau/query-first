@@ -72,6 +72,7 @@ namespace QueryFirst.Providers
             qp.Length = len;
             qp.CSName = name;
             qp.DbName = '@' + name;
+			qp.AllowDbNull = typeAllowNulls;
         }
         public virtual List<IQueryParamInfo> FindUndeclaredParameters(string queryText)
         {
