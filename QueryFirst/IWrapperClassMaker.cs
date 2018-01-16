@@ -37,7 +37,7 @@
         string StartClass(CodeGenerationContext ctx);
         string StartNamespace(CodeGenerationContext ctx);
         string Usings(CodeGenerationContext ctx);
-        string MakeInterface(CodeGenerationContext ctx);
+        string MakeInterface(CodeGenerationContext ctx, bool requireConnectionParameter = false);
         string SelfTestUsings(CodeGenerationContext ctx);
         string MakeSelfTestMethod(CodeGenerationContext ctx);
     }

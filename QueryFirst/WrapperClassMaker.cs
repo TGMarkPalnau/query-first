@@ -238,22 +238,26 @@ using System.Linq;
                 return "";
         }
 
-        public string MakeInterface(CodeGenerationContext ctx)
+        public string MakeInterface(CodeGenerationContext ctx, bool requireConnectionParameter = false)
         {
             char[] spaceComma = new char[] { ',', ' ' };
             StringBuilder code = new StringBuilder();
             code.AppendLine("public interface I" + ctx.BaseName + "{" + Environment.NewLine);
             if (ctx.ResultFields != null && ctx.ResultFields.Count > 0)
             {
-                code.AppendLine("List<" + ctx.ResultClassName + "> Execute(" + GetMethodSignature(ctx).Trim(spaceComma) + ");");
+				if (!requireConnectionParameter)
+					code.AppendLine("List<" + ctx.ResultClassName + "> Execute(" + GetMethodSignature(ctx).Trim(spaceComma) + ");");
                 code.AppendLine("IEnumerable<" + ctx.ResultClassName + "> Execute(" + GetMethodSignature(ctx) + "IDbConnection conn);");
-                code.AppendLine("" + ctx.ResultClassName + " GetOne(" + GetMethodSignature(ctx).Trim(spaceComma) + ");");
+				if (!requireConnectionParameter)
+					code.AppendLine("" + ctx.ResultClassName + " GetOne(" + GetMethodSignature(ctx).Trim(spaceComma) + ");");
                 code.AppendLine("" + ctx.ResultClassName + " GetOne(" + GetMethodSignature(ctx) + "IDbConnection conn);");
-                code.AppendLine("" + ctx.ResultFields[0].TypeCs + " ExecuteScalar(" + GetMethodSignature(ctx).Trim(spaceComma) + ");");
+				if (!requireConnectionParameter)
+					code.AppendLine("" + ctx.ResultFields[0].TypeCs + " ExecuteScalar(" + GetMethodSignature(ctx).Trim(spaceComma) + ");");
                 code.AppendLine("" + ctx.ResultFields[0].TypeCs + " ExecuteScalar(" + GetMethodSignature(ctx) + "IDbConnection conn);");
                 code.AppendLine("" + ctx.ResultClassName + " Create(IDataRecord record);");
             }
-            code.AppendLine("int ExecuteNonQuery(" + GetMethodSignature(ctx).Trim(spaceComma) + ");");
+			if (!requireConnectionParameter)
+				code.AppendLine("int ExecuteNonQuery(" + GetMethodSignature(ctx).Trim(spaceComma) + ");");
             code.AppendLine("int ExecuteNonQuery(" + GetMethodSignature(ctx) + "IDbConnection conn);");
             code.AppendLine("}"); // close interface;
 

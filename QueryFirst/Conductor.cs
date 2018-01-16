@@ -68,6 +68,7 @@ The query {1} may not run and the wrapper has not been regenerated.",
                 QfRuntimeConnection.CurrentConnectionString = ctx.DesignTimeConnectionString.v.ConnectionString;
 
                 var makeSelfTest = ctx.ProjectConfig?.AppSettings["QfMakeSelfTest"] != null && bool.Parse(ctx.ProjectConfig.AppSettings["QfMakeSelfTest"].Value);
+				var alwaysRequireConnection = ctx.ProjectConfig?.AppSettings["QfAlwaysRequireConnection"] != null && bool.Parse(ctx.ProjectConfig.AppSettings["QfAlwaysRequireConnection"].Value);
 
 				var matchInsert = Regex.Match(ctx.Query.Text, "^insert\\s+into\\s+(?<tableName>\\w+)\\.\\.\\.", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                 var matchUpdate = Regex.Match(ctx.Query.Text, "^update\\s+(?<tableName>\\w+)\\.\\.\\.", RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -137,9 +138,10 @@ The query {1} may not run and the wrapper has not been regenerated.",
                         Code.Append(wrapper.SelfTestUsings(ctx));
                     if (ctx.ResultFields != null && ctx.ResultFields.Count > 0)
                         Code.Append(results.Usings());
-                    Code.Append(wrapper.MakeInterface(ctx));
+                    Code.Append(wrapper.MakeInterface(ctx, alwaysRequireConnection));
                     Code.Append(wrapper.StartClass(ctx));
-                    Code.Append(wrapper.MakeExecuteNonQueryWithoutConn(ctx));
+					if (!alwaysRequireConnection)
+						Code.Append(wrapper.MakeExecuteNonQueryWithoutConn(ctx));
                     Code.Append(wrapper.MakeExecuteNonQueryWithConn(ctx));
                     Code.Append(wrapper.MakeGetCommandTextMethod(ctx));
                     Code.Append(ctx.Provider.MakeAddAParameter(ctx));
@@ -148,11 +150,14 @@ The query {1} may not run and the wrapper has not been regenerated.",
                         Code.Append(wrapper.MakeSelfTestMethod(ctx));
                     if (ctx.ResultFields != null && ctx.ResultFields.Count > 0)
                     {
-                        Code.Append(wrapper.MakeExecuteWithoutConn(ctx));
+						if (!alwaysRequireConnection)
+							Code.Append(wrapper.MakeExecuteWithoutConn(ctx));
                         Code.Append(wrapper.MakeExecuteWithConn(ctx));
-                        Code.Append(wrapper.MakeGetOneWithoutConn(ctx));
+						if (!alwaysRequireConnection)
+							Code.Append(wrapper.MakeGetOneWithoutConn(ctx));
                         Code.Append(wrapper.MakeGetOneWithConn(ctx));
-                        Code.Append(wrapper.MakeExecuteScalarWithoutConn(ctx));
+						if (!alwaysRequireConnection)
+							Code.Append(wrapper.MakeExecuteScalarWithoutConn(ctx));
                         Code.Append(wrapper.MakeExecuteScalarWithConn(ctx));
 
                         Code.Append(wrapper.MakeCreateMethod(ctx));
