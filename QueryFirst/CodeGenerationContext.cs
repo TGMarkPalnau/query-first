@@ -56,6 +56,7 @@ namespace QueryFirst
 		}
         public Query Query { get { return query; } }
         protected string baseName;
+		protected string baseNameSafe;
         private ConfigurationAccessor _config;
         public ConfigurationAccessor ProjectConfig
         {
@@ -88,6 +89,15 @@ namespace QueryFirst
                 return baseName;
             }
         }
+		public string BaseNameSafe
+		{
+			get
+			{
+				if (baseNameSafe == null)
+					baseNameSafe = BaseName.Replace('.', '_');
+				return baseNameSafe;
+			}
+		}
         /// <summary>
         /// The directory containing the 3 files for this query, with trailing slash
         /// </summary>
@@ -156,7 +166,7 @@ namespace QueryFirst
 				if (string.IsNullOrEmpty(userPartialClass))
 					userPartialClass = File.ReadAllText(CurrDir + BaseName + parametersClassNameSuffix + ".cs");
 				if (parametersClassName == null)
-					parametersClassName = Regex.Match(userParametersPartialClass, "(?im)partial class (\\S+)").Groups[1].Value;
+					parametersClassName = Regex.Match(userParametersPartialClass.Replace('.','_'), "(?im)partial class (\\S+)").Groups[1].Value;
 				return parametersClassName;
 
 			}
@@ -171,7 +181,7 @@ namespace QueryFirst
                 if (string.IsNullOrEmpty(userPartialClass))
                     userPartialClass = File.ReadAllText(CurrDir + BaseName + resultClassNameSuffix + ".cs");
                 if (resultClassName == null)
-                    resultClassName = Regex.Match(userPartialClass, "(?im)partial class (\\S+)").Groups[1].Value;
+                    resultClassName = Regex.Match(userPartialClass.Replace('.', '_'), "(?im)partial class (\\S+)").Groups[1].Value;
                 return resultClassName;
 
             }
@@ -231,7 +241,7 @@ namespace QueryFirst
 			get
 			{
 				if (string.IsNullOrEmpty(methodSignatureObject))
-					methodSignatureObject = BaseName + parametersClassNameSuffix + " " + queryPrefix + parametersClassNameSuffix;
+					methodSignatureObject = BaseNameSafe + parametersClassNameSuffix + " " + queryPrefix + parametersClassNameSuffix;
 
 				return methodSignatureObject;
 			}

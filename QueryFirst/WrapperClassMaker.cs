@@ -30,7 +30,7 @@ using System.Linq;
         }
         public virtual string StartClass(CodeGenerationContext ctx)
         {
-            return "public partial class " + ctx.BaseName + " : I" + ctx.BaseName + "{" + Environment.NewLine;
+            return "public partial class " + ctx.BaseNameSafe + " : I" + ctx.BaseNameSafe + "{" + Environment.NewLine;
 
         }
         public virtual string MakeExecuteWithoutConn(CodeGenerationContext ctx)
@@ -242,7 +242,7 @@ using System.Linq;
         {
             char[] spaceComma = new char[] { ',', ' ' };
             StringBuilder code = new StringBuilder();
-            code.AppendLine("public interface I" + ctx.BaseName + "{" + Environment.NewLine);
+            code.AppendLine("public interface I" + ctx.BaseNameSafe + "{" + Environment.NewLine);
             if (ctx.ResultFields != null && ctx.ResultFields.Count > 0)
             {
 				if (!requireConnectionParameter)
@@ -278,7 +278,7 @@ using System.Linq;
             StringBuilder code = new StringBuilder();
 
             code.AppendLine("[Fact]");
-            code.AppendLine("public void " + ctx.BaseName + "SelfTest()");
+            code.AppendLine("public void " + ctx.BaseNameSafe + "SelfTest()");
             code.AppendLine("{");
             code.AppendLine("var queryText = getCommandText();");
             code.AppendLine("// we'll be getting a runtime version with the comments section closed. To run without parameters, open it.");
